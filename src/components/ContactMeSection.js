@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import { useFormik } from "formik";
 import {
   Box,
@@ -12,19 +12,34 @@ import {
   Textarea,
   VStack,
 } from "@chakra-ui/react";
-import * as Yup from 'yup';
+import * as yup from "yup";
 import FullScreenSection from "./FullScreenSection";
 import useSubmit from "../hooks/useSubmit";
-import {useAlertContext} from "../context/alertContext";
+import { useAlertContext } from "../context/alertContext";
 
 const LandingSection = () => {
-  const {isLoading, response, submit} = useSubmit();
+  const { isLoading, response, submit } = useSubmit();
   const { onOpen } = useAlertContext();
 
   const formik = useFormik({
-    initialValues: {},
-    onSubmit: (values) => {},
-    validationSchema: Yup.object({}),
+    initialValues: {
+      firstName: "",
+      email: "",
+      type: "",
+      comment: "",
+    },
+    onSubmit: (values) => {
+      submit("some url", values);
+    },
+    validationSchema: yup.object({
+      firstName: yup.string().required("Required"),
+      email: yup.string().email("Invalid email address").required("Required"),
+      type: yup.string(),
+      comment: yup
+        .string()
+        .required("Required")
+        .min(25, "Must be at least 25 characters"),
+    }),
   });
 
   return (
@@ -46,8 +61,10 @@ const LandingSection = () => {
                 <Input
                   id="firstName"
                   name="firstName"
+                  {...formik.getFieldProps("firstName")}
                 />
-                <FormErrorMessage></FormErrorMessage>
+
+                <FormErrorMessage>Help me</FormErrorMessage>
               </FormControl>
               <FormControl isInvalid={false}>
                 <FormLabel htmlFor="email">Email Address</FormLabel>
@@ -55,6 +72,7 @@ const LandingSection = () => {
                   id="email"
                   name="email"
                   type="email"
+                  {...formik.getFieldProps("email")}
                 />
                 <FormErrorMessage></FormErrorMessage>
               </FormControl>
@@ -74,7 +92,9 @@ const LandingSection = () => {
                   id="comment"
                   name="comment"
                   height={250}
+                  {...formik.getFieldProps("comment")}
                 />
+
                 <FormErrorMessage></FormErrorMessage>
               </FormControl>
               <Button type="submit" colorScheme="purple" width="full">
