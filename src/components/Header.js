@@ -36,6 +36,7 @@ const Header = () => {
   const handleClick = (anchor) => () => {
     const id = `${anchor}-section`;
     const element = document.getElementById(id);
+    console.log(id, element);
     if (element) {
       element.scrollIntoView({
         behavior: "smooth",
@@ -64,11 +65,20 @@ const Header = () => {
           alignItems="center"
         >
           <nav>
-            {/* Add social media links based on the `socials` data */}
+            {socials.map((social, idx) => (
+              <a href={social.url} key={idx}>
+                <FontAwesomeIcon icon={social.icon} size="2x" />
+              </a>
+            ))}
           </nav>
           <nav>
             <HStack spacing={8}>
-              {/* Add links to Projects and Contact me section */}
+              <a href="/#projects" onClick={handleClick("projects")}>
+                Projects
+              </a>
+              <a href="/#contact-me" onClick={handleClick("contactme")}>
+                Contact Me
+              </a>
             </HStack>
           </nav>
         </HStack>
